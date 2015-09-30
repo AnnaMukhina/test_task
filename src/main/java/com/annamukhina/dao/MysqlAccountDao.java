@@ -13,7 +13,17 @@ public class MysqlAccountDao implements Dao {
     private final String DB_USER = "user";
     private final String DB_PASSWORD = "password";
 
-    public void checkAccount(Account account) {
+    @Override
+    public void changeSurname(Account account) {
+        if(checkAccountExistence(account)) {
+            updateAccount(account);
+        }
+        else {
+            System.out.println("Account doesn't exist.");
+        }
+    }
+
+    public boolean checkAccountExistence(Account account) {
         try {
             Class.forName(DB_DRIVER);
 
@@ -31,13 +41,11 @@ public class MysqlAccountDao implements Dao {
                     ResultSet resultSet = preparedStatement.executeQuery();
 
                     if (!resultSet.wasNull()) {
-                        changeSurname(account);
-
                         resultSet.close();
 
                         preparedStatement.close();
-                    } else {
-                        System.out.println("Account doesn't exist.");
+
+                        return true;
                     }
                 }
             }
@@ -51,9 +59,10 @@ public class MysqlAccountDao implements Dao {
         } catch (SQLException e) {
             System.out.println("Error during connecting to database. Please try again.");
         }
+        return false;
     }
 
-    public void changeSurname(Account account) {
+    public void updateAccount(Account account) {
         try {
             Connection connection = DriverManager.getConnection(DB_URL,DB_USER, DB_PASSWORD);
 
@@ -73,6 +82,8 @@ public class MysqlAccountDao implements Dao {
                     preparedStatement.executeUpdate();
 
                     System.out.println("Account has been updated.");
+
+                    preparedStatement.close();
                 }
             } finally {
                 if (connection != null) {

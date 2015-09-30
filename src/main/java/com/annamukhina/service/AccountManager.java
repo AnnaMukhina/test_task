@@ -5,4 +5,6 @@ package com.annamukhina.service;
  */
 public interface AccountManager {
     void changeSurname(Account account);
+
+    Account getParameters();
 }
