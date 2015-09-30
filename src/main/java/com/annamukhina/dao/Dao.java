@@ -6,5 +6,6 @@ import com.annamukhina.service.Account;
  * @author anna_mukhina
  */
 public interface Dao {
-    void update(Account account);
+    void checkAccount(Account account);
+    void changeSurname(Account account);
 }
